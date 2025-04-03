@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemistry Reaction Explorer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #ff9800;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        button {
+            background: #ff9800;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+            margin-bottom: 30px;
+        }
+
+        button:hover {
+            background: #ffab00;
+            transform: scale(1.05);
+        }
+
+        .reaction-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 600px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chapter-name {
+            color: #4CAF50;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .reaction-text {
+            font-size: 1.2em;
+            color: #ff9800;
+            line-height: 1.6;
+        }
+
+        .completed {
+            color: #4CAF50;
+            font-size: 1.4em;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chemistry Reaction Explorer</h1>
+        <button onclick="showRandomReaction()">Show Random Reaction</button>
+        <div id="reaction-display"></div>
+        <div id="completion-status" class="completed"></div>
+    </div>
+
+    <script>
+        const chemistryChapters = [
+            {
+                name: "Haloalkanes",
+                reactions: [
+                    "Preparation from alkane",
+                    "Preparation from alkene",
+                    "Preparation from alcohol",
+                    "Preparation from alkychlorides",
+                    "Formation of alcohol",
+                    "Formation of CN group",
+                    "Formation of amines",
+                    "Formation of ether",
+                    "Formation of carbylaamine",
+                    "Formation of nitroalkane",
+                    "Dehydrohalogenation reaction",
+                    "Chloroform from acetone",
+                    "Chloroform from ethanol",
+                    "Oxidation of chloroform",
+                    "Action with silver",
+                    "Hydrolysis of chloroform",
+                    "Carbylamine reaction",
+                    "Condensation with ketone",
+                    "Nitration/Cholopicrin",
+                    "Riermer-Tierman Reaction"
+                ]
+            },
+            {
+                name: "Haloarenes",
+                reactions: [
+                    "Preparation from benzene",
+                    "Preparation from diazonium salt",
+                    "Gatterman reaction",
+                    "Formation phenol",
+                    "Formation of aniline",
+                    "Formation of isonitrile",
+                    "Formation of benzoic acid",
+                    "Formation of benzylamine",
+                    "Formation of benzamide",
+                    "Formation of toluene",
+                    "Friedel Crafts reactions",
+                    "Wurtz Fittig reaction",
+                    "Fittig reaction",
+                    "Reduction of haloarenes",
+                    "DDT formation"
+                ]
+            },
+            {
+                name: "Alcohol",
+                reactions: [
+                    "From haloalkanes",
+                    "From esters",
+                    "From amines",
+                    "From Grignard reagent",
+                    "Oxo process",
+                    "Hydroboration process",
+                    "Fermentation of sugar",
+                    "Victor Mayers test",
+                    "Reaction with HBr/HCl/HI",
+                    "Reaction with phosphorus halide",
+                    "Action with thionyl chloride",
+                    "Esterification",
+                    "Reaction with metals",
+                    "Dehydration of alcohol",
+                    "Oxidation of alcohol",
+                    "Catalytic dehydration",
+                    "Lucas test",
+                    "Iodoform test"
+                ]
+            },
+            {
+                name: "Phenol",
+                reactions: [
+                    "From chlorobenzene",
+                    "From diazonium salt",
+                    "From benzene sulphonic acid",
+                    "From salicylic acid",
+                    "From cumene",
+                    "From Grignard reagent",
+                    "Acidic nature of phenol",
+                    "Reaction with NaOH",
+                    "Reaction with NaHCO3",
+                    "Reaction with ammonia",
+                    "Reaction with zinc dust",
+                    "Reaction with Na",
+                    "Reaction with diazonium salt",
+                    "Reaction with phthalic anhydride",
+                    "Acylation reaction",
+                    "Kolbes reaction",
+                    "Riermer Tierman’s reaction",
+                    "Friedel Crafts alkylation",
+                    "Reaction with PCl5",
+                    "Ferric chloride test",
+                    "Aqueous bromine test",
+                    "Libermanns reaction"
+                ]
+            },
+            {
+                name: "Ethers",
+                reactions: [
+                    "Williamson’s synthesis",
+                    "Reaction with halogen acids",
+                    "Action with concentrated acids",
+                    "Action with air",
+                    "Action with chlorine"
+                ]
+            },
+            {
+                name: "Aldehyde and Ketone",
+                reactions: [
+                    "Oxidation of alcohol",
+                    "Ozonolysis",
+                    "Catalytic dehydration",
+                    "Rosenmund’s reaction",
+                    "Dialkyl cadmium",
+                    "From gemdihalo alkane",
+                    "Hydration of alkynes",
+                    "2,4-DNP test",
+                    "Tollens reagent",
+                    "Fehlings reagent",
+                    "Addition of H2",
+                    "Addition of HCN",
+                    "Addition of NaHSO3",
+                    "Grignard addition",
+                    "Aldol condensation",
+                    "Cross aldol",
+                    "Cannizzaro reaction",
+                    "Clemmensen reduction",
+                    "Cross Cannizzaro",
+                    "Wolf-Kishner reduction",
+                    "LiAlH4 action",
+                    "PCl5 reaction",
+                    "Reaction with ammonia",
+                    "Reaction with hydroxyl amine",
+                    "Reaction with hydrazine",
+                    "Reaction with phenylhydrazine",
+                    "Reaction with semicarbazide",
+                    "Reaction with phenol",
+                    "Benzaldehyde from toluene",
+                    "Acetophenone from benzene",
+                    "Perkin condensation",
+                    "Benzoin condensation",
+                    "Benzaldehyde oxidation",
+                    "Benzaldehyde reduction"
+                ]
+            },
+            {
+                name: "Carboxylic Acid",
+                reactions: [
+                    "Oxidation of alcohol",
+                    "From nitriles",
+                    "From dicarboxylic acid",
+                    "From sodium alkoxide",
+                    "From trihaloalkanes",
+                    "From toluene",
+                    "From Grignard reagent",
+                    "Reaction with alkalies",
+                    "Reaction with metal oxides",
+                    "Reaction with carbonates",
+                    "Formation of acid chlorides",
+                    "LiAlH4 reaction",
+                    "Dehydration",
+                    "Hell’s Volhard Zelinsky",
+                    "Esterification",
+                    "SOCl2 addition",
+                    "PCl5 addition",
+                    "Tollens reaction",
+                    "Fehlings reaction",
+                    "K2Cr2O7 reaction",
+                    "Mercuric chloride reaction"
+                ]
+            },
+            {
+                name: "Nitro Compounds",
+                reactions: [
+                    "From haloalkanes",
+                    "From alkane",
+                    "From benzene",
+                    "Reduction in acidic medium",
+                    "Reduction in neutral medium",
+                    "Catalytic reduction",
+                    "Metal hydrides reduction",
+                    "Alkali medium reduction",
+                    "LiAlH4 reduction",
+                    "Selective Reduction"
+                ]
+            },
+            {
+                name: "Amines",
+                reactions: [
+                    "Hoffman’s Ammonalysis",
+                    "Reduction of nitrocompounds",
+                    "Reduction of nitriles",
+                    "Reduction of amides",
+                    "From nitrobenzene",
+                    "From phenol",
+                    "From benzamide",
+                    "Reaction with chloroform",
+                    "Reaction with conc HCl",
+                    "Reaction with alkyl halides",
+                    "Reaction with acid chlorides",
+                    "Coupling reaction",
+                    "1° test",
+                    "2° test",
+                    "3° test",
+                    "Hoffman separation method"
+                ]
+            }
+        ];
+
+        let availableReactions = chemistryChapters.flatMap(chapter => 
+            chapter.reactions.map(text => ({
+                chapter: chapter.name,
+                text
+            }))
+        );
+
+        function showRandomReaction() {
+            if (availableReactions.length === 0) {
+                document.getElementById("completion-status").innerHTML = 
+                    "All reactions have been viewed! Refresh to start over.";
+                return;
+            }
+
+            const randomIndex = Math.floor(Math.random() * availableReactions.length);
+            const reaction = availableReactions.splice(randomIndex, 1)[0];
+
+            const displayHTML = `
+                <div class="reaction-card">
+                    <div class="chapter-name">${reaction.chapter}</div>
+                    <div class="reaction-text">${reaction.text}</div>
+                </div>
+            `;
+
+            document.getElementById("reaction-display").innerHTML = displayHTML;
+        }
+    </script>
+</body>
+</html>

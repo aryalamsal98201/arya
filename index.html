@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random PDF Viewer</title>
+    <title>Chemistry Reaction Explorer</title>
     <style>
-        * {
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #121212;
-            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            color: #fff;
             margin: 0;
             padding: 20px;
             min-height: 100vh;
@@ -20,347 +16,311 @@
             flex-direction: column;
             align-items: center;
         }
-        
-        h1 {
-            font-size: 2.5em;
-            color: #f0ad4e;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .randomize-btn {
-            background-color: #28a745;
-            color: white;
-            padding: 12px 24px;
-            font-size: 1.2em;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            margin: 20px 0;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .randomize-btn:hover {
-            background-color: #218838;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        }
-        
+
         .container {
+            max-width: 800px;
             width: 100%;
-            max-width: 1200px;
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
-        
-        .columns {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            width: 100%;
-        }
-        
-        .column {
-            flex: 1;
-            background-color: #1e1e1e;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            min-height: 300px;
-            transition: transform 0.3s ease;
-            overflow-y: auto;
-            max-height: 500px;
-        }
-        
-        .column:hover {
-            transform: translateY(-5px);
-        }
-        
-        .column h2 {
-            color: #f0ad4e;
             text-align: center;
-            margin-top: 0;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #333;
-            position: sticky;
-            top: 0;
-            background-color: #1e1e1e;
-            z-index: 1;
         }
-        
-        .chapters-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 15px;
+
+        h1 {
+            color: #ff9800;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
-        
-        .chapter {
-            background-color: #333;
+
+        button {
+            background: #ff9800;
             color: white;
-            padding: 12px 15px;
-            border-radius: 6px;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 25px;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-align: center;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+            margin-bottom: 30px;
         }
-        
-        .chapter:hover {
-            background-color: #f0ad4e;
-            color: #121212;
-            transform: translateX(5px);
+
+        button:hover {
+            background: #ffab00;
+            transform: scale(1.05);
         }
-        
-        .pdf-viewer-container {
-            width: 100%;
+
+        .reaction-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 600px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chapter-name {
+            color: #4CAF50;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .reaction-text {
+            font-size: 1.2em;
+            color: #ff9800;
+            line-height: 1.6;
+        }
+
+        .completed {
+            color: #4CAF50;
+            font-size: 1.4em;
             margin-top: 30px;
-            background-color: #1e1e1e;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        
-        .pdf-viewer {
-            width: 100%;
-            height: 70vh;
-            border: 1px solid #444;
-            border-radius: 6px;
-        }
-        
-        @media (max-width: 900px) {
-            .columns {
-                flex-direction: column;
-            }
-            
-            .column {
-                min-height: auto;
-                max-height: 300px;
-            }
-            
-            .pdf-viewer {
-                height: 50vh;
-            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Random PDF Viewer</h1>
-        
-        <!-- Randomize Button -->
-        <button class="randomize-btn" onclick="loadRandomPage()">Randomize Page</button>
-        
-        <!-- Columns for subjects -->
-        <div class="columns">
-            <!-- Physics Block -->
-            <div class="column" id="physics">
-                <h2>Physics</h2>
-                <div class="chapters-list">
-                    <div class="chapter">Rotational dynamics</div>
-                    <div class="chapter">Periodic motion</div>
-                    <div class="chapter">Fluidstatics</div>
-                    <div class="chapter">First law of thermodynamics</div>
-                    <div class="chapter">Second law of thermodynamics</div>
-                    <div class="chapter">Wave motion</div>
-                    <div class="chapter">Mechanical waves</div>
-                    <div class="chapter">Waves in pipes and string</div>
-                    <div class="chapter">Acoustic phenomena</div>
-                    <div class="chapter">Nature of propagation of light</div>
-                    <div class="chapter">Interference</div>
-                    <div class="chapter">Diffraction</div>
-                    <div class="chapter">Polarization</div>
-                    <div class="chapter">Electrical circuits</div>
-                    <div class="chapter">Thermoelectric effects</div>
-                    <div class="chapter">Magnetic field</div>
-                    <div class="chapter">Magnetic properties of materials</div>
-                    <div class="chapter">Electromagnetic induction</div>
-                    <div class="chapter">Alternating current</div>
-                    <div class="chapter">Electrons</div>
-                    <div class="chapter">Photons</div>
-                    <div class="chapter">Semiconductor devices</div>
-                    <div class="chapter">Quantization of energy</div>
-                    <div class="chapter">Radioactivity and nuclear reaction</div>
-                    <div class="chapter">Recent trends in physics</div>
-                </div>
-            </div>
-            
-            <!-- Chemistry Block -->
-            <div class="column" id="chemistry">
-                <h2>Chemistry</h2>
-                <div class="chapters-list">
-                    <div class="chapter">Volumetric analysis</div>
-                    <div class="chapter">Ionic equilibrium</div>
-                    <div class="chapter">Chemical kinetics</div>
-                    <div class="chapter">Thermodynamics</div>
-                    <div class="chapter">Electrochemistry</div>
-                    <div class="chapter">Transition metal</div>
-                    <div class="chapter">Heavy metals</div>
-                    <div class="chapter">Haloalkanes</div>
-                    <div class="chapter">Haloarenes</div>
-                    <div class="chapter">Alcohols</div>
-                    <div class="chapter">Phenols</div>
-                    <div class="chapter">Ethers</div>
-                    <div class="chapter">Aldehyde and ketone</div>
-                    <div class="chapter">Carboxylic acids</div>
-                    <div class="chapter">Nitrocompounds</div>
-                    <div class="chapter">Amines</div>
-                    <div class="chapter">Organometallic compounds</div>
-                    <div class="chapter">Cement</div>
-                    <div class="chapter">Paper and pulp</div>
-                </div>
-            </div>
-            
-            <!-- Math Block -->
-            <div class="column" id="math">
-                <h2>Mathematics</h2>
-                <div class="chapters-list">
-                    <div class="chapter">Permutation</div>
-                    <div class="chapter">Combination</div>
-                    <div class="chapter">Binomial Theorem</div>
-                    <div class="chapter">Complex Number</div>
-                    <div class="chapter">Sequence & Series</div>
-                    <div class="chapter">Matrix</div>
-                    <div class="chapter">Algebra Questions</div>
-                    <div class="chapter">Trigonometry</div>
-                    <div class="chapter">Conic Section</div>
-                    <div class="chapter">Vector</div>
-                    <div class="chapter">Correlation & Regression</div>
-                    <div class="chapter">Probability</div>
-                    <div class="chapter">Derivatives</div>
-                    <div class="chapter">Antiderivatives</div>
-                    <div class="chapter">Differential Equation</div>
-                    <div class="chapter">System of Linear Equations</div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- PDF Viewer -->
-        <div class="pdf-viewer-container">
-            <iframe id="pdfViewer" class="pdf-viewer" src=""></iframe>
-        </div>
+        <h1>Chemistry Reaction Explorer</h1>
+        <button onclick="showRandomReaction()">Show Random Reaction</button>
+        <div id="reaction-display"></div>
+        <div id="completion-status" class="completed"></div>
     </div>
 
     <script>
-        // Chapter data with page numbers
-        const chapterData = {
-            math: [
-                {name: "Permutation", page: 1},
-                {name: "Combination", page: 7},
-                {name: "Binomial Theorem", page: 11},
-                {name: "Complex Number", page: 22},
-                {name: "Sequence & Series", page: 31},
-                {name: "Matrix", page: 40},
-                {name: "Algebra Questions", page: 48},
-                {name: "Trigonometry", page: 52},
-                {name: "Conic Section", page: 65},
-                {name: "Vector", page: 82},
-                {name: "Correlation & Regression", page: 93},
-                {name: "Probability", page: 104},
-                {name: "Derivatives", page: 107},
-                {name: "Antiderivatives", page: 129},
-                {name: "Differential Equation", page: 142},
-                {name: "System of Linear Equations", page: 161}
-            ],
-            physics: [
-                {name: "Rotational dynamics", page: 1},
-                {name: "Periodic motion", page: 10},
-                {name: "Fluidstatics", page: 20},
-                {name: "First law of thermodynamics", page: 30},
-                {name: "Second law of thermodynamics", page: 40},
-                {name: "Wave motion", page: 50},
-                {name: "Mechanical waves", page: 60},
-                {name: "Waves in pipes and string", page: 70},
-                {name: "Acoustic phenomena", page: 80},
-                {name: "Nature of propagation of light", page: 90},
-                {name: "Interference", page: 100},
-                {name: "Diffraction", page: 110},
-                {name: "Polarization", page: 120},
-                {name: "Electrical circuits", page: 130},
-                {name: "Thermoelectric effects", page: 140},
-                {name: "Magnetic field", page: 150},
-                {name: "Magnetic properties of materials", page: 160},
-                {name: "Electromagnetic induction", page: 170},
-                {name: "Alternating current", page: 180},
-                {name: "Electrons", page: 190},
-                {name: "Photons", page: 200},
-                {name: "Semiconductor devices", page: 210},
-                {name: "Quantization of energy", page: 220},
-                {name: "Radioactivity and nuclear reaction", page: 230},
-                {name: "Recent trends in physics", page: 240}
-            ],
-            chemistry: [
-                {name: "Volumetric analysis", page: 1},
-                {name: "Ionic equilibrium", page: 10},
-                {name: "Chemical kinetics", page: 20},
-                {name: "Thermodynamics", page: 30},
-                {name: "Electrochemistry", page: 40},
-                {name: "Transition metal", page: 50},
-                {name: "Heavy metals", page: 60},
-                {name: "Haloalkanes", page: 70},
-                {name: "Haloarenes", page: 80},
-                {name: "Alcohols", page: 90},
-                {name: "Phenols", page: 100},
-                {name: "Ethers", page: 110},
-                {name: "Aldehyde and ketone", page: 120},
-                {name: "Carboxylic acids", page: 130},
-                {name: "Nitrocompounds", page: 140},
-                {name: "Amines", page: 150},
-                {name: "Organometallic compounds", page: 160},
-                {name: "Cement", page: 170},
-                {name: "Paper and pulp", page: 180}
-            ]
-        };
+        const chemistryChapters = [
+            {
+                name: "Haloalkanes",
+                reactions: [
+                    "Preparation from alkane",
+                    "Preparation from alkene",
+                    "Preparation from alcohol",
+                    "Preparation from alkychlorides",
+                    "Formation of alcohol",
+                    "Formation of CN group",
+                    "Formation of amines",
+                    "Formation of ether",
+                    "Formation of carbylaamine",
+                    "Formation of nitroalkane",
+                    "Dehydrohalogenation reaction",
+                    "Chloroform from acetone",
+                    "Chloroform from ethanol",
+                    "Oxidation of chloroform",
+                    "Action with silver",
+                    "Hydrolysis of chloroform",
+                    "Carbylamine reaction",
+                    "Condensation with ketone",
+                    "Nitration/Cholopicrin",
+                    "Riermer-Tierman Reaction"
+                ]
+            },
+            {
+                name: "Haloarenes",
+                reactions: [
+                    "Preparation from benzene",
+                    "Preparation from diazonium salt",
+                    "Gatterman reaction",
+                    "Formation phenol",
+                    "Formation of aniline",
+                    "Formation of isonitrile",
+                    "Formation of benzoic acid",
+                    "Formation of benzylamine",
+                    "Formation of benzamide",
+                    "Formation of toluene",
+                    "Friedel Crafts reactions",
+                    "Wurtz Fittig reaction",
+                    "Fittig reaction",
+                    "Reduction of haloarenes",
+                    "DDT formation"
+                ]
+            },
+            {
+                name: "Alcohol",
+                reactions: [
+                    "From haloalkanes",
+                    "From esters",
+                    "From amines",
+                    "From Grignard reagent",
+                    "Oxo process",
+                    "Hydroboration process",
+                    "Fermentation of sugar",
+                    "Victor Mayers test",
+                    "Reaction with HBr/HCl/HI",
+                    "Reaction with phosphorus halide",
+                    "Action with thionyl chloride",
+                    "Esterification",
+                    "Reaction with metals",
+                    "Dehydration of alcohol",
+                    "Oxidation of alcohol",
+                    "Catalytic dehydration",
+                    "Lucas test",
+                    "Iodoform test"
+                ]
+            },
+            {
+                name: "Phenol",
+                reactions: [
+                    "From chlorobenzene",
+                    "From diazonium salt",
+                    "From benzene sulphonic acid",
+                    "From salicylic acid",
+                    "From cumene",
+                    "From Grignard reagent",
+                    "Acidic nature of phenol",
+                    "Reaction with NaOH",
+                    "Reaction with NaHCO3",
+                    "Reaction with ammonia",
+                    "Reaction with zinc dust",
+                    "Reaction with Na",
+                    "Reaction with diazonium salt",
+                    "Reaction with phthalic anhydride",
+                    "Acylation reaction",
+                    "Kolbes reaction",
+                    "Riermer Tierman’s reaction",
+                    "Friedel Crafts alkylation",
+                    "Reaction with PCl5",
+                    "Ferric chloride test",
+                    "Aqueous bromine test",
+                    "Libermanns reaction"
+                ]
+            },
+            {
+                name: "Ethers",
+                reactions: [
+                    "Williamson’s synthesis",
+                    "Reaction with halogen acids",
+                    "Action with concentrated acids",
+                    "Action with air",
+                    "Action with chlorine"
+                ]
+            },
+            {
+                name: "Aldehyde and Ketone",
+                reactions: [
+                    "Oxidation of alcohol",
+                    "Ozonolysis",
+                    "Catalytic dehydration",
+                    "Rosenmund’s reaction",
+                    "Dialkyl cadmium",
+                    "From gemdihalo alkane",
+                    "Hydration of alkynes",
+                    "2,4-DNP test",
+                    "Tollens reagent",
+                    "Fehlings reagent",
+                    "Addition of H2",
+                    "Addition of HCN",
+                    "Addition of NaHSO3",
+                    "Grignard addition",
+                    "Aldol condensation",
+                    "Cross aldol",
+                    "Cannizzaro reaction",
+                    "Clemmensen reduction",
+                    "Cross Cannizzaro",
+                    "Wolf-Kishner reduction",
+                    "LiAlH4 action",
+                    "PCl5 reaction",
+                    "Reaction with ammonia",
+                    "Reaction with hydroxyl amine",
+                    "Reaction with hydrazine",
+                    "Reaction with phenylhydrazine",
+                    "Reaction with semicarbazide",
+                    "Reaction with phenol",
+                    "Benzaldehyde from toluene",
+                    "Acetophenone from benzene",
+                    "Perkin condensation",
+                    "Benzoin condensation",
+                    "Benzaldehyde oxidation",
+                    "Benzaldehyde reduction"
+                ]
+            },
+            {
+                name: "Carboxylic Acid",
+                reactions: [
+                    "Oxidation of alcohol",
+                    "From nitriles",
+                    "From dicarboxylic acid",
+                    "From sodium alkoxide",
+                    "From trihaloalkanes",
+                    "From toluene",
+                    "From Grignard reagent",
+                    "Reaction with alkalies",
+                    "Reaction with metal oxides",
+                    "Reaction with carbonates",
+                    "Formation of acid chlorides",
+                    "LiAlH4 reaction",
+                    "Dehydration",
+                    "Hell’s Volhard Zelinsky",
+                    "Esterification",
+                    "SOCl2 addition",
+                    "PCl5 addition",
+                    "Tollens reaction",
+                    "Fehlings reaction",
+                    "K2Cr2O7 reaction",
+                    "Mercuric chloride reaction"
+                ]
+            },
+            {
+                name: "Nitro Compounds",
+                reactions: [
+                    "From haloalkanes",
+                    "From alkane",
+                    "From benzene",
+                    "Reduction in acidic medium",
+                    "Reduction in neutral medium",
+                    "Catalytic reduction",
+                    "Metal hydrides reduction",
+                    "Alkali medium reduction",
+                    "LiAlH4 reduction",
+                    "Selective Reduction"
+                ]
+            },
+            {
+                name: "Amines",
+                reactions: [
+                    "Hoffman’s Ammonalysis",
+                    "Reduction of nitrocompounds",
+                    "Reduction of nitriles",
+                    "Reduction of amides",
+                    "From nitrobenzene",
+                    "From phenol",
+                    "From benzamide",
+                    "Reaction with chloroform",
+                    "Reaction with conc HCl",
+                    "Reaction with alkyl halides",
+                    "Reaction with acid chlorides",
+                    "Coupling reaction",
+                    "1° test",
+                    "2° test",
+                    "3° test",
+                    "Hoffman separation method"
+                ]
+            }
+        ];
 
-        // Set up click handlers for all chapters
-        document.addEventListener('DOMContentLoaded', function() {
-            // Math chapters
-            const mathChapters = document.querySelectorAll('#math .chapter');
-            mathChapters.forEach((chapter, index) => {
-                chapter.addEventListener('click', () => {
-                    loadChapter('math', index);
-                });
-            });
-            
-            // Physics chapters
-            const physicsChapters = document.querySelectorAll('#physics .chapter');
-            physicsChapters.forEach((chapter, index) => {
-                chapter.addEventListener('click', () => {
-                    loadChapter('physics', index);
-                });
-            });
-            
-            // Chemistry chapters
-            const chemistryChapters = document.querySelectorAll('#chemistry .chapter');
-            chemistryChapters.forEach((chapter, index) => {
-                chapter.addEventListener('click', () => {
-                    loadChapter('chemistry', index);
-                });
-            });
-        });
+        let availableReactions = chemistryChapters.flatMap(chapter => 
+            chapter.reactions.map(text => ({
+                chapter: chapter.name,
+                text
+            }))
+        );
 
-        // Load specific chapter
-        function loadChapter(subject, chapterIndex) {
-            const chapter = chapterData[subject][chapterIndex];
-            const iframe = document.getElementById('pdfViewer');
-            iframe.src = `${subject}.pdf#page=${chapter.page}`;
-            
-            // Scroll to the PDF viewer
-            setTimeout(() => {
-                document.querySelector('.pdf-viewer-container').scrollIntoView({ 
-                    behavior: 'smooth' 
-                });
-            }, 100);
-        }
+        function showRandomReaction() {
+            if (availableReactions.length === 0) {
+                document.getElementById("completion-status").innerHTML = 
+                    "All reactions have been viewed! Refresh to start over.";
+                return;
+            }
 
-        // Load random page from any subject
-        function loadRandomPage() {
-            const subjects = ['math', 'physics', 'chemistry'];
-            const randomSubject = subjects[Math.floor(Math.random() * subjects.length)];
-            const chapters = chapterData[randomSubject];
-            const randomChapter = Math.floor(Math.random() * chapters.length);
-            loadChapter(randomSubject, randomChapter);
+            const randomIndex = Math.floor(Math.random() * availableReactions.length);
+            const reaction = availableReactions.splice(randomIndex, 1)[0];
+
+            const displayHTML = `
+                <div class="reaction-card">
+                    <div class="chapter-name">${reaction.chapter}</div>
+                    <div class="reaction-text">${reaction.text}</div>
+                </div>
+            `;
+
+            document.getElementById("reaction-display").innerHTML = displayHTML;
         }
     </script>
 </body>
